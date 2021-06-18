@@ -15,7 +15,7 @@ namespace TestApp
 			
 			label1.Text = ProductName + "\n" + ProductVersion;
 
-			updater = new SharpUpdater(Assembly.GetExecutingAssembly(), this, new Uri("https://raw.githubusercontent.com/Omararafa/Test/main/project.xml"));
+			updater = new SharpUpdater(Assembly.GetExecutingAssembly(), this, new Uri("https://raw.githubusercontent.com/Omararafa/Deployment-Tool/master/project.xml"));
 			//updater = new SharpUpdater(Assembly.GetExecutingAssembly(), this, new Uri(new System.IO.FileInfo(@"..\..\..\project.xml").FullName));       // for local testing
 		}
 
