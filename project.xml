@@ -1,27 +1,27 @@
-<?xml version="1.0"?>
-<sharpUpdate>
-  <update>
-    <version>2.0.0.0</version>
-    <url>https://github.com/Omararafa/Test/blob/main/WindowsFormsApp1.exe?raw=true</url>
-    <filePath>C:\Users\Admin\AppData\Roaming\Autodesk\Revit\Addins\2018\AppTwo\WindowsFormsApp1.exe</filePath>
-    <md5>5857188A507EAFC9414E6062180C8682</md5>
-    <description>App Two Test To Updateee</description>
-    <launchArgs></launchArgs>
-  </update>
-  <update>
-    <version>2.0.0.0</version>
-    <url>https://github.com/Omararafa/Test/blob/main/WpfApp1.exe?raw=true</url>
-    <filePath>C:\Users\Admin\AppData\Roaming\Autodesk\Revit\Addins\2018\AppOne\WpfApp1.exe</filePath>
-    <md5>5857188A507EAFC9414E6062180C8682</md5>
-    <description>App One exe Test To Updateee</description>
-    <launchArgs></launchArgs>
-  </update>
-  <update>
-    <version>2.0.0.0</version>
-    <url>https://github.com/Omararafa/Test/blob/main/WpfApp1.dll?raw=true</url>
-    <filePath>C:\Users\Admin\AppData\Roaming\Autodesk\Revit\Addins\2018\AppOne\WpfApp1.dll</filePath>
-    <md5>5857188A507EAFC9414E6062180C8682</md5>
-    <description>App One dll Test To Updateee</description>
-    <launchArgs></launchArgs>
-  </update>
+<?xml version="1.0"?> 
+<sharpUpdate> 
+    <update> 
+        <version>2.0.0.0</version> 
+        <url>https://github.com/Omararafa/Test/blob/main/WindowsFormsApp1.exe?raw=true</url> 
+        <filePath>C:\Users\Admin\AppData\Roaming\Autodesk\Revit\Addins\2018\AppTwo\WindowsFormsApp1.exe</filePath>
+        <md5>5857188A507EAFC9414E6062180C8682</md5>
+        <description>App Two Test To Updateee</description> 
+        <launchArgs></launchArgs> 
+    </update>
+    <update> 
+        <version>2.0.0.0</version> 
+        <url>https://github.com/Omararafa/Test/blob/main/WpfApp1.exe?raw=true</url> 
+        <filePath>C:\Users\Admin\AppData\Roaming\Autodesk\Revit\Addins\2018\AppOne\WpfApp1.exe</filePath>
+        <md5>5857188A507EAFC9414E6062180C8682</md5>
+        <description>App One exe Test To Updateee</description> 
+        <launchArgs></launchArgs> 
+    </update>
+    <update> 
+        <version>2.0.0.0</version> 
+        <url>https://github.com/Omararafa/Test/blob/main/WpfApp1.dll?raw=true</url> 
+        <filePath>C:\Users\Admin\AppData\Roaming\Autodesk\Revit\Addins\2018\AppOne\WpfApp1.dll</filePath>
+        <md5>5857188A507EAFC9414E6062180C8682</md5>
+        <description>App One dll Test To Updateee</description> 
+        <launchArgs></launchArgs> 
+    </update>
 </sharpUpdate>
