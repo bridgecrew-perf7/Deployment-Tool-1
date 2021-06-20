@@ -34,6 +34,10 @@ namespace SharpUpdate
                 DetailsButton.IsEnabled = true;
                 UpdateOne.Text = "Version "+Update.ToString()+" is Available";
             }
+            else
+            {
+                UpdateOne.Text = "No Updates Available";
+            }
             #endregion
             VersionOne.Text = CuurentVersion.ToString();
             SetPropertires();

@@ -125,6 +125,7 @@ namespace SharpUpdate
 
 					// create local app info according to update xml
 					Num_Jobs = JobsFromXML.Length;
+					Version CurrentVersion = new Version(0, 0, 0, 0);
 					LocalApplicationInfos = new SharpUpdateLocalAppInfo[Num_Jobs];
 					for (int i = 0; i < Num_Jobs; ++i)
 					{
@@ -137,12 +138,12 @@ namespace SharpUpdate
 							LocalApplicationInfos[i] = new SharpUpdateLocalAppInfo(JobsFromXML[i]);
 						}
 						LocalApplicationInfos[i].Print();
+						CurrentVersion = LocalApplicationInfos[i].Version;
 					}
 
 					// validate all update jobs
 					List<int> validJobs = new List<int>();
-					Version MaxVersion = new Version(0, 0, 0, 0);
-					Version CurrentVersion = new Version(0, 0, 0, 0); ;
+					Version MaxVersion = new Version(0, 0, 0, 0);					
 					for (int i = 0; i < Num_Jobs; ++i)
 					{
 						if (JobsFromXML[i].Tag == JobType.UPDATE)
@@ -154,7 +155,7 @@ namespace SharpUpdate
 							}
 								
 						}
-						CurrentVersion = LocalApplicationInfos[i].Version;
+						
 						if (JobsFromXML[i].Version > MaxVersion)
 						{
 							MaxVersion = JobsFromXML[i].Version;
