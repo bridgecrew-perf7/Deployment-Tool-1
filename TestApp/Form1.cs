@@ -47,5 +47,10 @@ namespace TestApp
         {
 
         }
+
+        private void Form1_Deactivate(object sender, EventArgs e)
+        {
+			this.WindowState = FormWindowState.Minimized;
+        }
     }
 }

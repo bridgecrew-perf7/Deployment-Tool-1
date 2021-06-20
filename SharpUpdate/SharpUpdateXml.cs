@@ -13,6 +13,9 @@ namespace SharpUpdate
 		/// <summary>
 		/// The update version #
 		/// </summary>
+		/// 
+		public string Program { get; }
+
 		public Version Version { get; }
 
 		/// <summary>
@@ -49,8 +52,9 @@ namespace SharpUpdate
 		/// <summary>
 		/// Creates a new SharpUpdateXml object
 		/// </summary>
-		public SharpUpdateXml(Version version, Uri uri, string filePath, string md5, string description, string launchArgs, JobType t)
+		public SharpUpdateXml(Version version, Uri uri, string filePath, string md5, string description, string launchArgs, JobType t,string program)
 		{
+			Program = program;
 			Version = version;
 			Uri = uri;
 			FilePath = filePath;
@@ -114,7 +118,7 @@ namespace SharpUpdate
 		{
 			List<SharpUpdateXml> result = new List<SharpUpdateXml>();
 			Version version = null;
-			string url = "", filePath = "", md5 = "", description = "", launchArgs = "";
+			string url = "", filePath = "", md5 = "", description = "", launchArgs = "", program = "";
 
 			try
 			{
@@ -134,6 +138,7 @@ namespace SharpUpdate
 						return null;
 
 					// Parse data
+					program = "Smart Design Update";
 					version = Version.Parse(updateNode["version"].InnerText);
 					url = updateNode["url"].InnerText;
 					filePath = updateNode["filePath"].InnerText;
@@ -141,10 +146,10 @@ namespace SharpUpdate
 					description = updateNode["description"].InnerText;
 					launchArgs = updateNode["launchArgs"].InnerText;
 
-					result.Add(new SharpUpdateXml(version, new Uri(url), filePath, md5, description, launchArgs, JobType.UPDATE));
+					result.Add(new SharpUpdateXml(version, new Uri(url), filePath, md5, description, launchArgs, JobType.UPDATE,program));
 				}
 
-				XmlNodeList addNodes = doc.DocumentElement.SelectNodes("/sharpUpdate/add");
+				XmlNodeList addNodes = doc.DocumentElement.SelectNodes("/SmartDesignUpdate/add");
 				foreach (XmlNode addNode in addNodes)
 				{
 					// If the node doesn't exist, there is no add
@@ -152,6 +157,7 @@ namespace SharpUpdate
 						return null;
 
 					// Parse data
+					program = "Smart Design Update";
 					version = Version.Parse(addNode["version"].InnerText);
 					url = addNode["url"].InnerText;
 					filePath = addNode["filePath"].InnerText;
@@ -159,10 +165,10 @@ namespace SharpUpdate
 					description = addNode["description"].InnerText;
 					launchArgs = addNode["launchArgs"].InnerText;
 
-					result.Add(new SharpUpdateXml(version, new Uri(url), filePath, md5, description, launchArgs, JobType.ADD));
+					result.Add(new SharpUpdateXml(version, new Uri(url), filePath, md5, description, launchArgs, JobType.ADD,program));
 				}
 
-				XmlNodeList removeNodes = doc.DocumentElement.SelectNodes("/sharpUpdate/remove");
+				XmlNodeList removeNodes = doc.DocumentElement.SelectNodes("/SmartDesignUpdate/remove");
 				foreach (XmlNode removeNode in removeNodes)
 				{
 					// If the node doesn't exist, there is no remove
@@ -170,11 +176,12 @@ namespace SharpUpdate
 						return null;
 
 					// Parse data
+					program = "Smart Design Update";
 					filePath = removeNode["filePath"].InnerText;
 					description = removeNode["description"].InnerText;
 					launchArgs = removeNode["launchArgs"].InnerText;
 
-					result.Add(new SharpUpdateXml(null, null, filePath, null, description, launchArgs, JobType.REMOVE));
+					result.Add(new SharpUpdateXml(null, null, filePath, null, description, launchArgs, JobType.REMOVE,program));
 				}
 
 				return result.ToArray();

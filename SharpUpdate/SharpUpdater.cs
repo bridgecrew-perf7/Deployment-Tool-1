@@ -141,41 +141,78 @@ namespace SharpUpdate
 
 					// validate all update jobs
 					List<int> validJobs = new List<int>();
+					Version MaxVersion = new Version(0, 0, 0, 0);
+					Version CurrentVersion = new Version(0, 0, 0, 0); ;
 					for (int i = 0; i < Num_Jobs; ++i)
 					{
 						if (JobsFromXML[i].Tag == JobType.UPDATE)
 						{
 							if (!JobsFromXML[i].IsNewerThan(LocalApplicationInfos[i].Version))
+                            {
+
 								continue;
+							}
+								
+						}
+						CurrentVersion = LocalApplicationInfos[i].Version;
+						if (JobsFromXML[i].Version > MaxVersion)
+						{
+							MaxVersion = JobsFromXML[i].Version;
+
 						}
 						validJobs.Add(i);
 					}
 
+					#region Accept Form
+					PluginsAcceptForm AccForm = new PluginsAcceptForm(validJobs.Count,validJobs,JobsFromXML,MaxVersion,CurrentVersion);
+					AccForm.Height = 150;
+					AccForm.Width = 700;
+					double screenWidth = System.Windows.SystemParameters.PrimaryScreenWidth;
+					double screenHeight = System.Windows.SystemParameters.PrimaryScreenHeight;
+					double windowWidth = AccForm.Width;
+					double windowHeight = AccForm.Height;
+					AccForm.Left = (screenWidth / 2) - (windowWidth / 2);
+					AccForm.Top = (screenHeight / 2) - (windowHeight / 2);
+					AccForm.ShowDialog();
+					bool Action = AccForm.Action;
+					#endregion
+
+
 					// let user choose to accept update jobs
 					bool showMsgBox = true;
 					int count = 0;
-					foreach (int i in validJobs)
-					{
-						count++;
-						showMsgBox = false;
-
-						// Ask to accept the update
-						if (new SharpUpdateAcceptForm(LocalApplicationInfos[i], JobsFromXML[i], count, validJobs.Count).ShowDialog(LocalApplicationInfos[0].Context) == DialogResult.Yes)
+                    if (Action)
+                    {
+						foreach (int i in validJobs)
 						{
+							count++;
+							showMsgBox = false;
+
+							// Ask to accept the update
+							/*if (new SharpUpdateAcceptForm(LocalApplicationInfos[i], JobsFromXML[i], count, validJobs.Count).ShowDialog(LocalApplicationInfos[0].Context) == DialogResult.Yes)
+							{
+								acceptJobs++;
+								DownloadUpdate(JobsFromXML[i], LocalApplicationInfos[i]); // Do the update
+							}*/
 							acceptJobs++;
 							DownloadUpdate(JobsFromXML[i], LocalApplicationInfos[i]); // Do the update
 						}
+
+						if (showMsgBox)
+						{
+							MessageBoxEx.Show(ParentForm, "You have the latest versions already!");
+						}
+						else
+						{
+							if (acceptJobs > 0)
+								InstallUpdate();
+						}
+					}
+                    else
+                    {
+						Application.Exit();
 					}
 
-					if (showMsgBox)
-					{
-						MessageBoxEx.Show(ParentForm, "You have the latest versions already!");
-					}
-					else
-					{
-						if (acceptJobs > 0)
-							InstallUpdate();
-					}
 				}
                 else
                 {
@@ -255,7 +292,7 @@ namespace SharpUpdate
 		/// </summary>
 		private void InstallUpdate()
 		{
-			MessageBoxEx.Show(ParentForm, "Plugin have been updated", "Success", 5000);
+			MessageBoxEx.Show( "Plugin have been updated", "Success");
 			UpdateApplications();
 			Application.Exit();
 		}
