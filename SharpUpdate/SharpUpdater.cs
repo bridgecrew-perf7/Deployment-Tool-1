@@ -177,8 +177,13 @@ namespace SharpUpdate
 							InstallUpdate();
 					}
 				}
-				else
+                else
+                {
 					MessageBoxEx.Show(ParentForm, "You have the latest versions already!");
+					
+				}
+					
+				
 			}
 			else
 				MessageBoxEx.Show(ParentForm, "No update information found!");
@@ -207,11 +212,20 @@ namespace SharpUpdate
 
 			if (result == DialogResult.OK)
 			{
-				string currentPath = (update.Tag == JobType.UPDATE) ? applicationInfo.ApplicationAssembly.Location : ""; 
+				string currentPath = (update.Tag == JobType.UPDATE) ? applicationInfo.ApplicationAssembly.Location : "";
+				List<string> x = new List<string>();
+				if (!(currentPath == null || currentPath == ""))
+				{
+					char separator = '\\';
+					foreach (var i in currentPath.Split(separator))
+					{
+						x.Add(i);
+					}
+				}
 				string newPath= "";
 				try
                 {
-					newPath = (update.Tag == JobType.UPDATE) ? Path.GetFullPath(Path.GetDirectoryName(currentPath).ToString() + update.FilePath) : Path.GetFullPath(applicationInfo.ApplicationPath);
+					newPath = (update.Tag == JobType.UPDATE) ? Path.GetFullPath(Path.GetDirectoryName(currentPath).ToString()+"\\"+x[x.Count-1]) : Path.GetFullPath(applicationInfo.ApplicationPath);
 				}
                 catch
                 {
@@ -241,7 +255,7 @@ namespace SharpUpdate
 		/// </summary>
 		private void InstallUpdate()
 		{
-			MessageBoxEx.Show(ParentForm, "Application restarts in 5 seconds", "Success", 5000);
+			MessageBoxEx.Show(ParentForm, "Plugin have been updated", "Success", 5000);
 			UpdateApplications();
 			Application.Exit();
 		}
@@ -293,7 +307,7 @@ namespace SharpUpdate
 				};
 				Process.Start(cmd);
 			}
-
+/*
 			if (curAppidx > -1)
 			{
 				argument_complete = string.Format(argument_update_start, currentPaths[curAppidx], tempFilePaths[curAppidx], newPaths[curAppidx], Path.GetDirectoryName(newPaths[curAppidx]), Path.GetFileName(newPaths[curAppidx]), launchArgss[curAppidx]);
@@ -312,7 +326,7 @@ namespace SharpUpdate
 				CreateNoWindow = true,
 				FileName = "cmd.exe"
 			};
-			Process.Start(cmd_main);
+			Process.Start(cmd_main);*/
 		}
 	}
 }

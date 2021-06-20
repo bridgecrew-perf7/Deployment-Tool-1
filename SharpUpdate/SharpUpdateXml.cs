@@ -126,7 +126,7 @@ namespace SharpUpdate
 				// Gets the appId's node with the update info
 				// This allows you to store all program's update nodes in one file
 				// XmlNode updateNode = doc.DocumentElement.SelectSingleNode("//update[@appID='" + appID + "']");
-				XmlNodeList updateNodes = doc.DocumentElement.SelectNodes("/sharpUpdate/update");
+				XmlNodeList updateNodes = doc.DocumentElement.SelectNodes("/SmartDesignUpdate/update");
 				foreach (XmlNode updateNode in updateNodes)
 				{
 					// If the node doesn't exist, there is no update

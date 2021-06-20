@@ -65,6 +65,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="bigFile" />
     <None Include="Properties\Settings.settings">
@@ -82,6 +83,12 @@
       <Project>{811C1D69-764F-4335-8363-B93A1D106268}</Project>
       <Name>SharpUpdate</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Deployer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Deployer 96.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
