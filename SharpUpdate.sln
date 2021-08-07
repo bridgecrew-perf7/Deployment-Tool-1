@@ -1,9 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpUpdate", "SharpUpdate\SharpUpdate.csproj", "{811C1D69-764F-4335-8363-B93A1D106268}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{414D9710-116E-4A14-90A3-51C868DE775B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginWindow", "Login-Window-master\Login-Window-master\LoginWindow\LoginWindow\LoginWindow.csproj", "{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,8 +39,23 @@ Global
 		{414D9710-116E-4A14-90A3-51C868DE775B}.Release|Mixed Platforms.Build.0 = Release|x86
 		{414D9710-116E-4A14-90A3-51C868DE775B}.Release|x86.ActiveCfg = Release|x86
 		{414D9710-116E-4A14-90A3-51C868DE775B}.Release|x86.Build.0 = Release|x86
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Debug|x86.Build.0 = Debug|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Release|x86.ActiveCfg = Release|Any CPU
+		{11037B1A-0CFB-41CA-8780-393DEAEFEFC0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E99C88B1-F963-4AA1-93D7-0A5882B445C4}
 	EndGlobalSection
 EndGlobal

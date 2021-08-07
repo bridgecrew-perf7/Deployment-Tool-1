@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace SharpUpdate
@@ -32,11 +34,15 @@ namespace SharpUpdate
 		/// Holds the program-to-update's info
 		/// </summary>
 		private SharpUpdateLocalAppInfo[] LocalApplicationInfos;
-
+		private List<SharpUpdateLocalAppInfo[]> LocalApplicationInfosList = new List<SharpUpdateLocalAppInfo[]>();
 		/// <summary>
 		/// Holds all the jobs defined in update xml
 		/// </summary>
-		private SharpUpdateXml[] JobsFromXML;
+		private SharpUpdateXml[] JobsFromXMLL;
+		public List<List<int>> ValidJobsList = new List<List<int>>();
+		public List<Version> MaxVersionList = new List<Version>();
+		public List<Version> CurrentVersionList = new List<Version>();
+		public List<SharpUpdateXml[]> ListOfUpdates = new List<SharpUpdateXml[]>();
 
 		/// <summary>
 		/// Total number of jobs
@@ -51,8 +57,10 @@ namespace SharpUpdate
 		private List<string> newPaths = new List<string>();
 		private List<string> launchArgss = new List<string>();
 		private List<JobType> jobtypes = new List<JobType>();
-
+		public Assembly UpdaterGene;
 		private int acceptJobs = 0;
+		public static string User = "";
+		public List<string> Programs = new List<string>();
 
 		/// <summary>
 		/// Thread to find update
@@ -63,6 +71,7 @@ namespace SharpUpdate
 		/// Uri of the update xml on the server
 		/// </summary>
 		private Uri UpdateXmlLocation;
+		private Uri CertificateXmlLocation;
 		//private readonly Uri UpdateXmlLocation = new Uri("https://raw.githubusercontent.com/henryxrl/SharpUpdate/master/project.xml");
 		//private readonly Uri UpdateXmlLocation = new Uri(new FileInfo(@"..\..\..\project.xml").FullName);       // for local testing
 
@@ -72,18 +81,45 @@ namespace SharpUpdate
 		/// <param name="a">Parent ssembly to be attached</param>
 		/// <param name="owner">Parent form to be attached</param>
 		/// <param name="XMLOnServer">Uri of the update xml on the server</param>
-		public SharpUpdater(Assembly a, Form owner, Uri XMLOnServer)
+		public SharpUpdater(Assembly a, Form owner, Uri XMLOnServer,string UserName,string PassWord)
 		{
 			ParentForm = owner;
 			ParentAssembly = a;
 			ParentPath = a.Location;
 
 			UpdateXmlLocation = XMLOnServer;
+			CertificateXmlLocation = new Uri("https://raw.githubusercontent.com/Omararafa/Tool-Deployment-Order/main/Certificates.xml");
+			ServicePointManager.Expect100Continue = true;
+			ServicePointManager.DefaultConnectionLimit = 9999;
+			//ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls;
+			ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+			// Request the update.xml
+			HttpWebRequest req = (HttpWebRequest)WebRequest.Create(CertificateXmlLocation.AbsoluteUri);
+			// Read for response
+			HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+			resp.Close();
+			var Certificates=CertificateXml.ParseCertificate(CertificateXmlLocation,UserName,PassWord);
 
-			// Set up backgroundworker
-			BgWorker = new BackgroundWorker();
-			BgWorker.DoWork += new DoWorkEventHandler(BgWorker_DoWork);
-			BgWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BgWorker_RunWorkerCompleted);
+
+			if(Certificates[0][0]== "User Not Found")
+            {
+				MessageBoxEx.Show("Mail or Password is wrong", "Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+				//Thread.Sleep(2000);
+				User = "User Not Found";
+				Application.Exit();
+			}
+            else
+            {
+				foreach(var it in Certificates[0])
+                {
+					Programs.Add(it);
+                }
+				//resp.StatusCode == HttpStatusCode.OK;
+				// Set up backgroundworker
+				BgWorker = new BackgroundWorker();
+				BgWorker.DoWork += new DoWorkEventHandler(BgWorker_DoWork);
+				BgWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BgWorker_RunWorkerCompleted);
+			}
 		}
 
 		/// <summary>
@@ -92,8 +128,12 @@ namespace SharpUpdate
 		/// </summary>
 		public void DoUpdate()
 		{
-			if (!BgWorker.IsBusy)
-				BgWorker.RunWorkerAsync();
+            if (BgWorker != null)
+            {
+				if (!BgWorker.IsBusy)
+					BgWorker.RunWorkerAsync();
+			}
+
 		}
 
 		/// <summary>
@@ -105,7 +145,7 @@ namespace SharpUpdate
 			if (!SharpUpdateXml.ExistsOnServer(UpdateXmlLocation))
 				e.Cancel = true;
 			else // Parse update xml
-				e.Result = SharpUpdateXml.Parse(UpdateXmlLocation);
+				e.Result = SharpUpdateXml.ParseSmart(UpdateXmlLocation);
 		}
 
 		/// <summary>
@@ -116,57 +156,83 @@ namespace SharpUpdate
 			// If there is a file on the server
 			if (!e.Cancelled)
 			{
-				JobsFromXML = (SharpUpdateXml[])e.Result;
+				
+				JobsFromXMLL = (SharpUpdateXml[])e.Result;
+				SharpUpdateXml[] JobsFromXMLSmart = SharpUpdateXml.ParseSmart(UpdateXmlLocation);
+				SharpUpdateXml[] JobsFromXMLDeployer = SharpUpdateXml.ParseDeployer(UpdateXmlLocation);
+				ListOfUpdates.Add(JobsFromXMLSmart);
+				ListOfUpdates.Add(JobsFromXMLDeployer);
 
 				// Check if the update is not null and is a newer version than the current application
-				if (JobsFromXML != null)
+				if (JobsFromXMLL != null)
 				{
-					Console.WriteLine("Number of updates from XML: " + JobsFromXML.Length);
+					foreach (var JobsFromXML in ListOfUpdates)
+                    {
+						Console.WriteLine("Number of updates from XML: " + JobsFromXML.Length);
 
-					// create local app info according to update xml
-					Num_Jobs = JobsFromXML.Length;
-					Version CurrentVersion = new Version(0, 0, 0, 0);
-					LocalApplicationInfos = new SharpUpdateLocalAppInfo[Num_Jobs];
-					for (int i = 0; i < Num_Jobs; ++i)
-					{
-						if (Path.GetFileName(ParentPath).CompareTo(Path.GetFileName(JobsFromXML[i].FilePath)) == 0)
+						// create local app info according to update xml
+						Num_Jobs = JobsFromXML.Length;
+						Version CurrentVersion = new Version(0, 0, 0, 0);
+						LocalApplicationInfos = new SharpUpdateLocalAppInfo[Num_Jobs];
+						for (int i = 0; i < Num_Jobs; ++i)
 						{
-							LocalApplicationInfos[i] = new SharpUpdateLocalAppInfo(JobsFromXML[i], ParentAssembly, ParentForm);
-						}
-						else
-						{
-							LocalApplicationInfos[i] = new SharpUpdateLocalAppInfo(JobsFromXML[i]);
-						}
-						LocalApplicationInfos[i].Print();
-						CurrentVersion = LocalApplicationInfos[i].Version;
-					}
-
-					// validate all update jobs
-					List<int> validJobs = new List<int>();
-					Version MaxVersion = new Version(0, 0, 0, 0);					
-					for (int i = 0; i < Num_Jobs; ++i)
-					{
-						if (JobsFromXML[i].Tag == JobType.UPDATE)
-						{
-							if (!JobsFromXML[i].IsNewerThan(LocalApplicationInfos[i].Version))
-                            {
-
-								continue;
+							/*if (Path.GetFileName(ParentPath).CompareTo(Path.GetFileName(JobsFromXML[i].FilePath)) == 0)
+							{
+								LocalApplicationInfos[i] = new SharpUpdateLocalAppInfo(JobsFromXML[i], ParentAssembly, ParentForm);
 							}
-								
+							else
+							{
+								LocalApplicationInfos[i] = new SharpUpdateLocalAppInfo(JobsFromXML[i]);
+							}*/
+							LocalApplicationInfos[i] = new SharpUpdateLocalAppInfo(JobsFromXML[i]);
+							LocalApplicationInfos[i].Print();
+							CurrentVersion = LocalApplicationInfos[i].Version;
 						}
-						
-						if (JobsFromXML[i].Version > MaxVersion)
-						{
-							MaxVersion = JobsFromXML[i].Version;
 
+						// validate all update jobs
+						List<int> validJobs = new List<int>();
+						Version MaxVersion = new Version(0, 0, 0, 0);
+						for (int i = 0; i < Num_Jobs; ++i)
+						{
+							if (JobsFromXML[i].Version > MaxVersion)
+							{
+								MaxVersion = JobsFromXML[i].Version;
+
+							}
+							if (JobsFromXML[i].Tag == JobType.UPDATE)
+							{
+								if (!JobsFromXML[i].IsNewerThan(LocalApplicationInfos[i].Version))
+								{
+
+									continue;
+								}
+                                else
+                                {
+									validJobs.Add(i);
+								}
+
+							}
+
+
+							
 						}
-						validJobs.Add(i);
+						ValidJobsList.Add(validJobs);
+						MaxVersionList.Add(MaxVersion);
+						CurrentVersionList.Add(CurrentVersion);
+						LocalApplicationInfosList.Add(LocalApplicationInfos);
 					}
 
 					#region Accept Form
-					PluginsAcceptForm AccForm = new PluginsAcceptForm(validJobs.Count,validJobs,JobsFromXML,MaxVersion,CurrentVersion);
-					AccForm.Height = 150;
+					PluginsAcceptForm AccForm = new PluginsAcceptForm(ValidJobsList,ListOfUpdates,MaxVersionList,CurrentVersionList,Programs);
+                    if (Programs.Count == 2)
+                    {
+						AccForm.Height = 190;
+					}
+                    else
+                    {
+						AccForm.Height = 190-40;
+					}
+					
 					AccForm.Width = 700;
 					double screenWidth = System.Windows.SystemParameters.PrimaryScreenWidth;
 					double screenHeight = System.Windows.SystemParameters.PrimaryScreenHeight;
@@ -176,6 +242,7 @@ namespace SharpUpdate
 					AccForm.Top = (screenHeight / 2) - (windowHeight / 2);
 					AccForm.ShowDialog();
 					bool Action = AccForm.Action;
+					int ProjectChoosen = AccForm.ProjectChoosen;
 					#endregion
 
 
@@ -184,7 +251,7 @@ namespace SharpUpdate
 					int count = 0;
                     if (Action)
                     {
-						foreach (int i in validJobs)
+						foreach (int i in ValidJobsList[ProjectChoosen])
 						{
 							count++;
 							showMsgBox = false;
@@ -196,7 +263,7 @@ namespace SharpUpdate
 								DownloadUpdate(JobsFromXML[i], LocalApplicationInfos[i]); // Do the update
 							}*/
 							acceptJobs++;
-							DownloadUpdate(JobsFromXML[i], LocalApplicationInfos[i]); // Do the update
+							DownloadUpdate(ListOfUpdates[ProjectChoosen][i], LocalApplicationInfosList[ProjectChoosen][i]); // Do the update
 						}
 
 						if (showMsgBox)
@@ -250,7 +317,26 @@ namespace SharpUpdate
 
 			if (result == DialogResult.OK)
 			{
-				string currentPath = (update.Tag == JobType.UPDATE) ? applicationInfo.ApplicationAssembly.Location : "";
+				string updatepath= Environment.ExpandEnvironmentVariables(update.FilePath);
+				List<string> Y = new List<string>();
+				string currentPath = "";
+				if (!(updatepath == null || updatepath == ""))
+				{
+					char separator = '\\';
+					foreach (var i in updatepath.Split(separator))
+					{
+						Y.Add(i);
+					}
+				}
+				if (Y[Y.Count - 1] == "Updater.dll")
+				{
+					currentPath = (update.Tag == JobType.UPDATE) ? updatepath : "";
+				}
+                else
+                {
+					currentPath = (update.Tag == JobType.UPDATE) ? applicationInfo.ApplicationAssembly.Location : "";
+				}
+
 				List<string> x = new List<string>();
 				if (!(currentPath == null || currentPath == ""))
 				{
@@ -263,6 +349,11 @@ namespace SharpUpdate
 				string newPath= "";
 				try
                 {
+                    if (x[x.Count - 1] == "Updater.dll")
+                    {
+						string Pathhh = Environment.ExpandEnvironmentVariables(update.FilePath);
+						newPath = (update.Tag == JobType.UPDATE) ? Path.GetFullPath(Pathhh) : Path.GetFullPath(applicationInfo.ApplicationPath);
+					}
 					newPath = (update.Tag == JobType.UPDATE) ? Path.GetFullPath(Path.GetDirectoryName(currentPath).ToString()+"\\"+x[x.Count-1]) : Path.GetFullPath(applicationInfo.ApplicationPath);
 				}
                 catch
@@ -293,7 +384,7 @@ namespace SharpUpdate
 		/// </summary>
 		private void InstallUpdate()
 		{
-			MessageBoxEx.Show( "Plugin have been updated", "Success");
+			MessageBoxEx.Show("Plugin Updated Successfully", "Success");
 			UpdateApplications();
 			Application.Exit();
 		}
@@ -314,12 +405,12 @@ namespace SharpUpdate
 			for (int i = 0; i < acceptJobs; ++i)
 			{
 				string curName = Path.GetFileName(currentPaths[i]);
-				if (curName.CompareTo("") != 0 && Path.GetFileName(ParentPath).CompareTo(curName) == 0)
+				/*if (curName.CompareTo("") != 0 && Path.GetFileName(ParentPath).CompareTo(curName) == 0)
 				{
 					curAppidx = i;
 					continue;
-				}
-
+				}*/
+				
 				if (jobtypes[i] == JobType.ADD)
 				{
 					argument_complete = string.Format(argument_add, tempFilePaths[i], newPaths[i]);
@@ -345,8 +436,8 @@ namespace SharpUpdate
 				};
 				Process.Start(cmd);
 			}
-/*
-			if (curAppidx > -1)
+
+		/*	if (curAppidx > -1)
 			{
 				argument_complete = string.Format(argument_update_start, currentPaths[curAppidx], tempFilePaths[curAppidx], newPaths[curAppidx], Path.GetDirectoryName(newPaths[curAppidx]), Path.GetFileName(newPaths[curAppidx]), launchArgss[curAppidx]);
 				Console.WriteLine("Update and run main app: " + argument_complete);

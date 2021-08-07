@@ -67,7 +67,15 @@ namespace SharpUpdate
             var myString = ApplicationPath.Substring(0, ApplicationPath.Length - 4);
             try
             {
-                ApplicationAssembly = (job.Tag == JobType.UPDATE) ? Assembly.LoadFrom(ApplicationPath) : null;
+                if (ApplicationName == "Updater")
+                {
+                    ApplicationAssembly = (job.Tag == JobType.UPDATE) ? Assembly.Load(ApplicationName) : null;
+                }
+                else
+                {
+                    ApplicationAssembly = (job.Tag == JobType.UPDATE) ? Assembly.LoadFrom(ApplicationPath) : null;
+                }
+                
             }
             catch
             {

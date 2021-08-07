@@ -1,0 +1,99 @@
+<Window x:Class="LoginWindow.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LoginWindow"
+        WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" SnapsToDevicePixels="true"
+        Background="White" AllowsTransparency="true" WindowStyle="None" ResizeMode="NoResize">
+  <FrameworkElement.Resources>
+    <local:ValueConverter x:Key="ValueConverter"/>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+  </FrameworkElement.Resources>
+  <Border BorderBrush="Gray" BorderThickness="1">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="48"/>
+        <RowDefinition Height="1"/>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
+      <Grid Row="0">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,0"
+                    Height="40">
+          <Path Width="19.5" Height="28.5" Margin="20,0,12,0" Stretch="Fill" HorizontalAlignment="Center"
+                VerticalAlignment="Center" Fill="DarkSlateBlue"
+                Data="F1 M 25,27 L 46,19 46,22.25 28.5,29 31.75,31.25 51,23.75 51,48.5 31.75,57 25,52 25,27 Z"/>
+          <TextBlock Foreground="#49BFCB" Text="Smart Design" FontSize="20" Margin="8,2,0,0" FontWeight="Normal"
+                     HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe WP"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0">
+          <Button Click="BtnActionMinimize_OnClick" ToolTip="Minimize" Width="32" Height="28"
+                  Style="{DynamicResource WindowActionButton}" VerticalAlignment="Center">
+            <Rectangle Margin="0,16,1,2" Width="9" Height="2" VerticalAlignment="Bottom"
+                       Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"/>
+          </Button>
+          <Button Click="btnActionClose_Click" ToolTip="Close" Width="32" Height="28"
+                  Style="{DynamicResource WindowActionButtonClose}">
+            <Path Width="10" Height="10" Stretch="Fill"
+                  Data="F1 M 26.9166,22.1667 L 37.9999,33.25 49.0832,22.1668 53.8332,26.9168 42.7499,38 53.8332,49.0834 49.0833,53.8334 37.9999,42.75 26.9166,53.8334 22.1666,49.0833 33.25,38 22.1667,26.9167 26.9166,22.1667 Z"
+                  Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"/>
+          </Button>
+        </StackPanel>
+      </Grid>
+      <Grid Row="1" Background="LightGray"/>
+      <Grid Row="2">
+        <Grid>
+          <Grid Name="LocalLoginGrid" Column="2" Visibility="Visible" Width="380">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+              <Image Source="Icons/employees-server.png" Height="64" Width="64" Margin="0,20,0,0"/>
+              <Label Content="Login" Margin="0,4,0,12" HorizontalAlignment="Center" Foreground="DarkSlateGray"
+                     FontFamily="Segoe UI Semilight" FontSize="26"/>
+              <Grid Margin="0,0,0,8">
+                <TextBlock Name="UserNameText" Margin="4,1,2,0" VerticalAlignment="Center" TextAlignment="Center"
+                           FontSize="16" Height="22" Text="Username" Foreground="LightBlue"
+                           Visibility="{Binding ElementName=LocalUserNameTextBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBox Name="LocalUserNameTextBox" CharacterCasing="Lower" TabIndex="4" Background="Transparent"
+                         HorizontalContentAlignment="Center" BorderBrush="Black" HorizontalAlignment="Center"
+                         VerticalContentAlignment="Center" Height="36" Width="220"
+                         IsEnabled="{Binding ElementName=WindowsCredentialsCheckBox, Path=IsChecked, Converter={StaticResource ValueConverter}}"/>
+              </Grid>
+              <Grid Margin="0,0,0,8">
+                <Grid Width="300" Height="40">
+                  <TextBlock GotFocus="PasswordText_GotFocus" LostFocus="PasswordText_LostFocus" Name="PasswordText"
+                             Margin="4,1,2,0" VerticalAlignment="Center" TextAlignment="Center" FontSize="16" Height="22"
+                             Text="Password" Foreground="LightBlue"
+                             Visibility="{Binding ElementName=passwordTxtBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                  <PasswordBox LostFocus="LocalPasswordBox_LostFocus" GotFocus="LocalPasswordBox_GotFocus" Name="LocalPasswordBox"
+                               Background="Transparent" HorizontalContentAlignment="Center" BorderBrush="Black"
+                               HorizontalAlignment="Center" VerticalContentAlignment="Center" Height="36" Width="220" TabIndex="5"
+                               IsEnabled="{Binding ElementName=WindowsCredentialsCheckBox, Path=IsChecked, Converter={StaticResource ValueConverter}}"/>
+                  <TextBox LostFocus="passwordTxtBox_LostFocus" GotFocus="passwordTxtBox_GotFocus" Name="passwordTxtBox"
+                           Visibility="Collapsed" Height="36" Width="220" TabIndex="5" HorizontalAlignment="Center"
+                           VerticalContentAlignment="Center" Background="Transparent" HorizontalContentAlignment="Center"
+                           BorderBrush="Black"/>
+                </Grid>
+              </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" Name="WindowsCredentialsCheckBox"
+                          Visibility="Collapsed" Grid.Column="0" Content="Remember Me" Height="26" Margin="-6,0,0,8"
+                          HorizontalAlignment="Center" IsChecked="False" VerticalAlignment="Center" TabIndex="7"/>
+                <CheckBox Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" Name="RememberCheckBox" Visibility="Visible"
+                          Grid.Column="0" Content="Remember Me" Height="26" Margin="-6,0,0,8" HorizontalAlignment="Center"
+                          IsChecked="False" VerticalAlignment="Center" TabIndex="7"/>
+                <CheckBox Checked="ShowCheckBox_Checked" Unchecked="ShowCheckBox_Unchecked" Name="ShowCheckBox"
+                          Visibility="Visible" Grid.Column="1" Content="Show Password" Height="26" Margin="-6,0,0,8"
+                          HorizontalAlignment="Center" IsChecked="False" VerticalAlignment="Center" TabIndex="7"/>
+              </Grid>
+              <Button Click="LocalLoginButton_Click" Name="LocalLoginButton" Content="Login" Width="220" Height="36"
+                      Margin="0,0,0,32" TabIndex="8" Focusable="true"/>
+            </StackPanel>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
+  </Border>
+</Window>

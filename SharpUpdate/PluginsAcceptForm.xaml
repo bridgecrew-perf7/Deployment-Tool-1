@@ -6,13 +6,13 @@
              xmlns:local="clr-namespace:SharpUpdate"
              mc:Ignorable="d" 
             Closing="Window_Closing"
-             d:DesignHeight="150" d:DesignWidth="700">
+             d:DesignHeight="190" d:DesignWidth="700">
     <Grid>
         <StackPanel>
             <TextBox x:Name="ErrorName" Margin="0 0 0 0" HorizontalAlignment="Left" 
                      FontSize="20" FontWeight="Bold" Foreground="Black" 
                      BorderBrush="LightGray" Width="700" Background="LightGray">Deployer</TextBox>
-            <Grid Margin="0 0 0 0" Height="40">
+            <Grid Margin="0 0 0 0" Height="80">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="170*"></ColumnDefinition>
                     <ColumnDefinition Width="71*"></ColumnDefinition>
@@ -22,20 +22,30 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"></RowDefinition>
-
+                    <RowDefinition Height="40"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBox IsReadOnly="True" Margin="12,10,12,0" BorderThickness="0" Grid.Column="0" Grid.Row="0" FontWeight="Bold"
-                         HorizontalAlignment="Center" FontFamily=" " FontSize="14" Width="146">Smart Design Update</TextBox>
-                <TextBox IsReadOnly="True" Margin="21,10,0,0" BorderThickness="0" Grid.Column="2" Grid.Row="0" Foreground="Gray"
+                <TextBox IsReadOnly="True" Margin="12,10,12,0" BorderThickness="0" Grid.Column="0" Grid.Row="1" FontWeight="Bold"
+                         HorizontalAlignment="Center" FontFamily=" " FontSize="14" Name="TextOne" Width="146">Smart Design Update</TextBox>
+                <TextBox IsReadOnly="True" Margin="21,10,0,0" BorderThickness="0" Grid.Column="2" Grid.Row="1" Foreground="Gray"
                          HorizontalAlignment="Center" FontFamily=" " FontSize="14" Name="UpdateOne" Width="200">Version 1.0.0.1 is available</TextBox>
-                <TextBox IsReadOnly="True" Margin="12,10,12,0" BorderThickness="0" Grid.Column="1" Grid.Row="0" Foreground="RoyalBlue"
+                <TextBox IsReadOnly="True" Margin="12,10,12,0" BorderThickness="0" Grid.Column="1" Grid.Row="1" Foreground="RoyalBlue"
                          HorizontalAlignment="Center" FontFamily=" " FontSize="14" Name="VersionOne" Width="47">1.0.0.0</TextBox>
-                <Button Margin="18,7,9,7"  Grid.Column="3" Grid.Row="0" FontWeight="Bold" Name="DetailsButton"
+                <Button Margin="18,7,9,7"  Grid.Column="3" Grid.Row="1" FontWeight="Bold" Name="DetailsButton"
                          HorizontalAlignment="Center" FontFamily=" " FontSize="13" Width="86" Click="Details" IsEnabled="False">Details</Button>
-                <Button Margin="19,7,9,7"  Grid.Column="4" Grid.Row="0" FontWeight="Bold" Name="UpdateButton"
+                <Button Margin="19,7,9,7"  Grid.Column="4" Grid.Row="1" FontWeight="Bold" Name="UpdateButton"
                          HorizontalAlignment="Center" FontFamily=" " FontSize="14" Width="86" Click="Update" IsEnabled="False">Update</Button>
 
 
+                <TextBox IsReadOnly="True" Margin="12,10,12,0" BorderThickness="0" Grid.Column="0" Grid.Row="0" FontWeight="Bold"
+                         HorizontalAlignment="Center" FontFamily=" " FontSize="14" Name="TextTwo" Width="146">Deployer Tool</TextBox>
+                <TextBox IsReadOnly="True" Margin="21,10,0,0" BorderThickness="0" Grid.Column="2" Grid.Row="0" Foreground="Gray"
+                         HorizontalAlignment="Center" FontFamily=" " FontSize="14" Name="UpdateTwo" Width="200">Version 1.0.0.1 is available</TextBox>
+                <TextBox IsReadOnly="True" Margin="12,10,12,0" BorderThickness="0" Grid.Column="1" Grid.Row="0" Foreground="RoyalBlue"
+                         HorizontalAlignment="Center" FontFamily=" " FontSize="14" Name="VersionTwo" Width="47">1.0.0.0</TextBox>
+                <Button Margin="18,7,9,7"  Grid.Column="3" Grid.Row="0" FontWeight="Bold" Name="DetailsButtonTwo"
+                         HorizontalAlignment="Center" FontFamily=" " FontSize="13" Width="86" Click="DetailsButtonTwo_Click" IsEnabled="False">Details</Button>
+                <Button Margin="19,7,9,7"  Grid.Column="4" Grid.Row="0" FontWeight="Bold" Name="UpdateButtonTwo"
+                         HorizontalAlignment="Center" FontFamily=" " FontSize="14" Width="86" Click="UpdateButtonTwo_Click" IsEnabled="False">Update</Button>
 
 
 
@@ -43,10 +53,6 @@
 
 
 
-
-                <Border Grid.Column="0" />
-                <Border Grid.Column="1"/>
-                <Border Grid.Column="2"/>
                 <Border Grid.Column="0" BorderBrush="Black" BorderThickness="0 1 0 1"/>
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0 1 0 1"/>
                 <Border Grid.Column="2" BorderBrush="Black" BorderThickness="0 1 0 1"/>
@@ -55,7 +61,7 @@
 
             </Grid>
 
-            <StackPanel Margin="0 0 0 0" Background="#eee" >
+            <StackPanel x:Name="ClosePanel" Margin="0 0 0 0" Background="#eee" >
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

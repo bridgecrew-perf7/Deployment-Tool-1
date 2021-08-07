@@ -2,6 +2,8 @@
 using System;
 using System.Reflection;
 using System.Windows.Forms;
+using LoginWindow;
+
 
 namespace TestApp
 {
@@ -14,15 +16,26 @@ namespace TestApp
 			InitializeComponent();
 			
 			label1.Text = ProductName + "\n" + ProductVersion;
+			LoginWindow.MainWindow login = new LoginWindow.MainWindow();
+			login.ShowDialog();
+			string UserName = login.UserName;
+			string PassWord = login.Password;
 
-			updater = new SharpUpdater(Assembly.GetExecutingAssembly(), this, new Uri("https://raw.githubusercontent.com/Omararafa/Tool-Deployment-Order/main/Update.xml"));
+			updater = new SharpUpdater(Assembly.GetExecutingAssembly(), this, new Uri("https://raw.githubusercontent.com/Omararafa/Tool-Deployment-Order/main/Update.xml"),UserName,PassWord);
 			//updater = new SharpUpdater(Assembly.GetExecutingAssembly(), this, new Uri(new System.IO.FileInfo(@"..\..\..\project.xml").FullName));       // for local testing
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
+
+
+
 			updater.DoUpdate();
 			string test = "";
+			if(SharpUpdater.User== "User Not Found")
+            {
+				Close();
+            }
 		}
 		private void TestClick()
 		{
