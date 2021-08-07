@@ -67,6 +67,7 @@ namespace SharpUpdate
 				// This allows you to store all program's update nodes in one file
 				// XmlNode updateNode = doc.DocumentElement.SelectSingleNode("//update[@appID='" + appID + "']");
 				XmlNodeList updateNodes = doc.DocumentElement.SelectNodes("/Certificates/User");
+				int count = 1;
 				foreach (XmlNode updateNode in updateNodes)
 				{
 					// If the node doesn't exist, there is no update
@@ -89,14 +90,18 @@ namespace SharpUpdate
 					}
                     else
                     {
-						List<string> NotFound = new List<string>()
+                        if (count == updateNodes.Count)
+                        {
+							List<string> NotFound = new List<string>()
 						{
 							"User Not Found"
 						};
-						result.Add(NotFound);
+							result.Add(NotFound);
+						}
+
                     }
 
-
+					count++;
 				}
 
 				return result;
