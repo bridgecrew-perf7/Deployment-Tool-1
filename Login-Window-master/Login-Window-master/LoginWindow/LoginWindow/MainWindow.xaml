@@ -23,7 +23,7 @@
           <Path Width="19.5" Height="28.5" Margin="20,0,12,0" Stretch="Fill" HorizontalAlignment="Center"
                 VerticalAlignment="Center" Fill="DarkSlateBlue"
                 Data="F1 M 25,27 L 46,19 46,22.25 28.5,29 31.75,31.25 51,23.75 51,48.5 31.75,57 25,52 25,27 Z"/>
-          <TextBlock Foreground="#49BFCB" Text="Smart Design" FontSize="20" Margin="8,2,0,0" FontWeight="Normal"
+          <TextBlock Foreground="#49BFCB" Text="Deployer Tool" FontSize="20" Margin="8,2,0,0" FontWeight="Normal"
                      HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe WP"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0">
